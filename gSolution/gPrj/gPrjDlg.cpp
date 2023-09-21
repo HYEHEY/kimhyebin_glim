@@ -7,6 +7,7 @@
 #include "gPrj.h"
 #include "gPrjDlg.h"
 #include "afxdialogex.h"
+#include <iostream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,6 +56,11 @@ END_MESSAGE_MAP()
 
 CgPrjDlg::CgPrjDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_GPRJ_DIALOG, pParent)
+	, n_mDiameter(_T(""))
+	, m_stcResult(_T(""))
+	, m_stcText(_T(""))
+	, m_stcX(_T(""))
+	, m_stcY(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -62,6 +68,9 @@ CgPrjDlg::CgPrjDlg(CWnd* pParent /*=nullptr*/)
 void CgPrjDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_INPUT, n_mDiameter);
+	DDX_Text(pDX, IDC_STATIC_RESULT, m_stcResult);
+	DDX_Text(pDX, IDC_STATIC_TEXT, m_stcText);
 }
 
 BEGIN_MESSAGE_MAP(CgPrjDlg, CDialogEx)
@@ -106,11 +115,18 @@ BOOL CgPrjDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	MoveWindow(0, 0, 850, 575);
+	//TestNum = 0;
+
+	MoveWindow(0, 0, 875, 575);
 	m_pDlgImage = new CDlgImage;
 	m_pDlgImage->Create(IDD_CDlgImage, this);
 	m_pDlgImage->ShowWindow(SW_SHOW);
 	m_pDlgImage->MoveWindow(25, 20, 640, 480);
+
+	m_stcText.Format(_T("원의 중심은"));
+	SetDlgItemText(IDC_STATIC_TEXT, m_stcText);
+	m_stcResult.Format(_T("?, ? 입니다."));
+	SetDlgItemText(IDC_STATIC_RESULT, m_stcResult);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -174,14 +190,31 @@ void CgPrjDlg::OnDestroy()
 
 void CgPrjDlg::OnBnClickedBtnDraw()
 {
-	unsigned char* fm = (unsigned char*)m_pDlgImage->m_image.GetBits();		// 이미지의 비트를 가져옴
-
-	m_pDlgImage->Invalidate();
+	CString Diameter;
+	GetDlgItemText(IDC_EDIT_INPUT, Diameter); 
+	int n_mDiameter = _ttoi(Diameter);
+	
+	if (n_mDiameter > 0) {
+		m_pDlgImage->nRadius = n_mDiameter;
+		m_pDlgImage->Invalidate();
+		m_pDlgImage->drawData();
+	}
+	else {
+		AfxMessageBox(_T("값을 입력해주세요."));
+	}
 }
 
 
 void CgPrjDlg::OnBnClickedBtnGetData()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int CenterX = m_pDlgImage->nCenterX;
+	int CenterY = m_pDlgImage->nCenterY;
+
+	if (CenterX > 0 && CenterY > 0) {
+		m_stcText.Format(_T("원의 중심은"));
+		SetDlgItemText(IDC_STATIC_TEXT, m_stcText);
+		m_stcResult.Format(_T("%d, %d 입니다."), CenterX, CenterY);
+		SetDlgItemText(IDC_STATIC_RESULT, m_stcResult);
+	}
 }
 

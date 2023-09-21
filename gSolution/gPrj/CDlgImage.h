@@ -12,6 +12,10 @@ public:
 	CDlgImage(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CDlgImage();
 
+	int nRadius;
+	int nCenterX;
+	int nCenterY;
+	
 	CImage m_image;
 	CWnd* m_pParent;
 
@@ -29,7 +33,11 @@ public:
 
 private:
 	void InitImage();
-	void drawData(&dc);
+	
 public:
 	afx_msg void OnPaint();
+	
+	void drawData();
+	void centerLine(CDC* pDC, CRect pRect);
+	CRect rectData();
 };

@@ -12,6 +12,7 @@ class CgPrjDlg : public CDialogEx
 public:
 	CgPrjDlg(CWnd* pParent = nullptr);	// 표준 생성자입니다.
 
+	CImage m_image;
 	CDlgImage* m_pDlgImage;
 
 // 대화 상자 데이터입니다.
@@ -37,4 +38,12 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedBtnDraw();
 	afx_msg void OnBnClickedBtnGetData();
+	
+	CString n_mDiameter;
+
+public:
+	CString m_stcResult;
+	CString m_stcText;
+	CString m_stcX;
+	CString m_stcY;
 };
